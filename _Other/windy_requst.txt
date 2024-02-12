@@ -1,0 +1,22 @@
+POST https://api.windy.com/api/point-forecast/v2
+200
+340 ms
+Network
+Request Headers
+Content-Type: application/json
+User-Agent: PostmanRuntime/7.29.2
+Accept: */*
+Postman-Token: e21f83b2-a03d-44bb-ad49-5aa076053963
+Host: api.windy.com
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Length: 232
+Request Body
+{
+    "lat": 49.809,
+    "lon": 16.787,
+    "model": "gfs",
+    "parameters": ["wind", "temp", "pressure", "precip", "ptype", "waves", "windWaves"],
+    "levels": ["surface"],
+    "key": "rdEcqxCPYQkgGqMvytzzRoSbWEAGSXJ6"
+}

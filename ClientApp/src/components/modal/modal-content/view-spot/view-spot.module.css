@@ -1,0 +1,87 @@
+.map {
+  height: 100%;
+  width: 100%;
+}
+
+.main {
+  width: 1000px;
+  min-height: calc(100vh / 2);
+}
+
+.div_photos {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: nowrap;
+  max-height: 375px;
+  overflow-y: hidden;
+  flex-direction: row;
+}
+
+/* .div_photos div:first-child {
+  flex-basis: 470px !important;
+} */
+.div_photos div {
+  flex-basis: 150px;
+  height: 60px;
+  cursor: pointer;
+}
+.div_photos img {
+  width: 100%;
+  cursor: pointer;
+}
+
+.div_photos div:hover {
+  border: solid rgba(48, 158, 192, 0.322) 1px;
+}
+
+.current_image {
+  height: 300px;
+  overflow: hidden;
+}
+
+.current_image img {
+  width: 100%;
+}
+
+.i_am_here {
+  margin-bottom: 60px;
+}
+.i_am_here textarea {
+  margin-bottom: 10px;
+}
+
+.comments {
+  max-height: calc(100vh - 700px);
+  overflow-y: auto;
+}
+.comments > div {
+  margin-bottom: 15px;
+}
+
+.comment_text {
+  font-style: italic;
+}
+.weather {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+.weather p {
+  margin-bottom: 0;
+}
+.weather img {
+  width: 40px;
+}
+.sub_title {
+  text-transform: lowercase;
+  font-size: 15px;
+  color: #4a4f52;
+  margin-left: 5px;
+}
+
+.description {
+  white-space: break-spaces;
+  font-size: 15px;
+}

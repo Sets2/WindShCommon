@@ -1,0 +1,151 @@
+version: "3.7"
+
+services:
+  #Web React
+  react:
+    container_name: "windsharing-web-react"
+    build:
+      context: .
+      dockerfile: ./ClientApp/dockerfile
+    ports:
+      - 3000:80
+    depends_on:
+      - web
+  #Web API
+  web:
+    container_name: "windsharing-web-api"
+    build:
+      context: .
+      dockerfile: ./WindSharing/Dockerfile
+    ports:
+      - 5006:80
+      - 5001:443
+    environment:
+      - ConnectionStrings__SqlDb=Server=windsharing-db-pg15;Database=WindSharing;Username=postgres;Password=postgres;
+      - ElasticSearchConnection__Url=http://windsharing-elasticsearch:9200/
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "RabbitMQSettings:Host=rabbitmq"
+      - "RabbitMQSettings:Queue=requestsvc"
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Admin123!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=./Https/WebApi.pfx
+    volumes:
+      - DirPhoto:/var/lib/dirphoto
+    depends_on:
+      - db-pg15
+      - elasticsearch
+      - rabbitmq
+  #Weather
+  weather:
+    container_name: "windsharing-weather-api"
+    build:
+      context: .
+      dockerfile: ./WeatherApi/Dockerfile
+    ports:
+      - 5002:80
+      - 5003:443
+    environment:
+      - "RabbitMQSettings:Host=rabbitmq"
+      - "RabbitMQSettings:Queue=responsesvc"
+      - "RedisSettings:RediusUrl=ocach-redis"
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=5003
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Admin123!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=./Https/WebApi.pfx
+    depends_on:
+      - rabbitmq
+  #Db
+  db-pg15:
+    image: "postgres:latest"
+    container_name: "windsharing-db-pg15"
+    restart: always
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=WindSharing
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  #Db admin
+  pg-admin:
+    image: "dpage/pgadmin4"
+    container_name: "windsharing-db-admin"
+    restart: always
+    ports:
+      - 8070:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "postgres@domain.com"
+      PGADMIN_DEFAULT_PASSWORD: "password"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db-pg15
+
+  #elasticsearch
+  elasticsearch:
+    image: "elasticsearch:8.5.3"
+    container_name: "windsharing-elasticsearch"
+    restart: always
+    environment:
+      discovery.type: "single-node"
+      xpack.security.enabled: "false"
+      xpack.security.enrollment.enabled: "false"
+      #ELASTIC_USERNAME: 'elastic'
+      #ELASTIC_PASSWORD: 'password'
+    ports:
+      - 9200:9200
+    deploy:
+      resources:
+        limits:
+          cpus: "0.20" # Use at most 50% of one CPU core
+          memory: 500M # Use at most 50 MB of RAM
+  #kibana
+  kibana:
+    image: "kibana:8.5.3"
+    container_name: "windsharing-kibana"
+    restart: always
+    environment:
+      ELASTICSEARCH_URL: "http://windsharing-elasticsearch:9200"
+    ports:
+      - 5601:5601
+    deploy:
+      resources:
+        limits:
+          cpus: "0.20" # Use at most 50% of one CPU core
+          memory: 500M # Use at most 50 MB of RAM
+    depends_on:
+      - elasticsearch
+
+  #RabbitMMQ
+  rabbitmq:
+    image: "rabbitmq:management"
+    tty: true
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmqddata:/var/lib/rabbitmq
+  #Redis Db
+  ocach-redis:
+    container_name: ocach-redis
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - rediscache:/var/lib/redis
+
+volumes:
+  postgres_data:
+  pgadmin-data:
+  rabbitmqddata:
+  rediscache:
+  DirPhoto:

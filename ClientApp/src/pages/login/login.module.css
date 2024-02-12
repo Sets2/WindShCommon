@@ -1,0 +1,13 @@
+.bg {
+  background-image: url("../../content/images/auth_bg.png");
+  height: calc(100vh - 56px);
+}
+
+.register_link_block {
+  min-width: 356px !important;
+  text-align: center;
+}
+
+.error {
+  margin-top: 50px;
+}

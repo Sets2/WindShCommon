@@ -1,0 +1,44 @@
+﻿.app_loader {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: #ffc107 !important;
+}
+
+.app_loader_header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: var(--modum-text-color);
+}
+
+.app_loader_text {
+    font-weight: 600;
+    font-size: 30pt;
+    margin-left: 30px;
+}
+
+    .app_loader_text span {
+        position: relative;
+        display: inline-block;
+        font-size: 50px;
+        text-transform: lowercase;
+        animation: app_loader_logo_flip 2s 1;
+        animation-delay: calc(0.15s * var(--num));
+    }
+
+@keyframes app_loader_logo_flip {
+    from {
+        transform: rotateY(0deg);
+    }
+
+    to {
+        transform: rotateY(360deg);
+    }
+}

@@ -1,0 +1,13 @@
+.div_img {
+  width: 25%;
+}
+.div_img img {
+  width: 100%;
+}
+
+.upload {
+  margin-top: 30px;
+}
+.upload label {
+  cursor: pointer;
+}
